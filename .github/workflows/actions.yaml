@@ -1,0 +1,30 @@
+name: Github CI
+on:
+  # Executa o pipeline quando um push ou pull request tiver como alvo a branch main
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest # Os comandos serão executados em um sistema operacional Linux
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v7 # Faz o checkout do código recebido
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v6 # Configura o Java 8 (compatível com source/target 1.7 do pom.xml)
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+
+      - name: Build
+        run: mvn -B package -DskipTests # Compila o código fonte
+
+      - name: Unit Test
+        run: mvn -B test # Executa os testes de unidade
